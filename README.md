@@ -28,7 +28,7 @@ The endpoints are `Erdos727.erdos727_k3 : formalConjecturesStatement_k3` and
 The terminal theorems `Erdos727.erdos727_k3` and `Erdos727.erdos727_k2` are proved with no
 `sorry`, no project axioms, and no `native_decide`; `lake build` asserts (via
 [`Erdos727/BuildAudit.lean`](Erdos727/BuildAudit.lean)) that their transitive axiom dependencies
-are exactly `propext`, `Classical.choice`, `Quot.sound`, and prints the reports.  Accepting the
+are exactly `propext`, `Classical.choice`, `Quot.sound`, and prints the report for `erdos727_k2`.  Accepting the
 pinned Formal Conjectures formulation of the `k = 2` question, this settles it affirmatively (and
 the `k = 3` case), subject to the usual trust in Lean's kernel, standard foundations, Mathlib at
 the pinned revision, and the checking environment.  It does not address the general case of

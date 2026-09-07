@@ -9,8 +9,7 @@ Recorded 2026-09-07T01:06:26Z on a local working tree (Darwin, Lean `leanprover/
 ```console
 $ lake build
 ℹ [8790/8792] Built Erdos727.BuildAudit (44s)
-info: Erdos727/BuildAudit.lean:19:0: 'Erdos727.erdos727_k3' depends on axioms: [propext, Classical.choice, Quot.sound]
-info: Erdos727/BuildAudit.lean:20:0: 'Erdos727.erdos727_k2' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Erdos727/BuildAudit.lean:19:0: 'Erdos727.erdos727_k2' depends on axioms: [propext, Classical.choice, Quot.sound]
 Build completed successfully (8792 jobs).
 $ bash scripts/check.sh
 Verified 13 axiom reports: standard foundations only.
