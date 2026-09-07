@@ -70,7 +70,7 @@ theorem not_carry_of_lt_two {p n : ℕ} (hp : p.Prime) (h1 : p ≤ 2 * (n % p))
   omega
 
 /-- A block of `k - b` consecutive carrying levels `b+1, …, k`, read off from `n mod p^k`. -/
-theorem carry_ge_of_block {p n b k r : ℕ} (hp : p.Prime) (hbk : b ≤ k) (hr : n % p ^ k = r)
+theorem carry_ge_of_block {p n b k r : ℕ} (hp : p.Prime) (_hbk : b ≤ k) (hr : n % p ^ k = r)
     (hblock : ∀ h, b < h → h ≤ k → p ^ h ≤ 2 * (r % p ^ h)) : k - b ≤ carry p n := by
   have := card_le_carry hp (Finset.Ioc b k) (by
     intro h hh

@@ -142,7 +142,7 @@ theorem exists_root {p : ℕ} (hp : p.Prime) (hpY : Y < p) (i : Fin 6) :
     rw [this, sub_self, mul_zero]
 
 /-- `F v % p = p - shift i` when `p ∣ Lv i v` and `p > 3`. -/
-theorem F_mod_eq {p : ℕ} (hp : p.Prime) (hp3 : 3 < p) (i : Fin 6) {v : ℕ} (h : p ∣ Lv i v) :
+theorem F_mod_eq {p : ℕ} (_hp : p.Prime) (hp3 : 3 < p) (i : Fin 6) {v : ℕ} (h : p ∣ Lv i v) :
     F v % p = p - shift i := by
   have hd : p ∣ F v + shift i := dvd_trans h (Lv_dvd_F_add_shift i v)
   have hs3 := shift_le_three i
@@ -225,7 +225,7 @@ theorem factorization_A_F_le_one {p : ℕ} (hp : p.Prime) (hpY : Y < p) {v : ℕ
     rw [Finset.sum_eq_zero (fun i _ => Nat.factorization_eq_zero_of_not_dvd (hex i))]
     exact zero_le_one
 
-theorem factorization_A_F_eq_zero {p : ℕ} (hp : p.Prime) (hpY : Y < p) {v : ℕ}
+theorem factorization_A_F_eq_zero {p : ℕ} (_hp : p.Prime) (_hpY : Y < p) {v : ℕ}
     (h : ∀ i, ¬ p ∣ Lv i v) : (A (F v)).factorization p = 0 := by
   rw [A_F, Nat.factorization_prod (fun i _ => (Lv_pos i v).ne'), Finsupp.finsetSum_apply]
   exact Finset.sum_eq_zero (fun i _ => Nat.factorization_eq_zero_of_not_dvd (h i))

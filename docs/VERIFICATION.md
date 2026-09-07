@@ -1,0 +1,58 @@
+# Verification record
+
+Recorded 2026-09-07T01:06:26Z on a local working tree (Darwin, Lean `leanprover/lean4:v4.34.0-rc2`, Mathlib `85e3a25e006c35636f0e53b0e9296caca2685bc0`).
+
+`bash scripts/check.sh` completed with exit code 0: source token scan, Formal Conjectures source comparison at revision `8323e878b83fcd7f4a448256069352a265460d75`, `lake build` (8792 jobs), and 13 axiom reports (standard foundations only). Logs: [check.log](verification/check.log), [axiom-audit.log](verification/axiom-audit.log).
+
+## Build transcript (excerpt)
+
+```console
+$ lake build
+ℹ [8790/8792] Built Erdos727.BuildAudit (44s)
+info: Erdos727/BuildAudit.lean:19:0: 'Erdos727.erdos727_k3' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Erdos727/BuildAudit.lean:20:0: 'Erdos727.erdos727_k2' depends on axioms: [propext, Classical.choice, Quot.sound]
+Build completed successfully (8792 jobs).
+$ bash scripts/check.sh
+Verified 13 axiom reports: standard foundations only.
+```
+
+## SHA-256 of the checked sources
+
+```text
+ae4ec8b0e7002e18c4de1c2a811e39051969d1035bb7818188e3335b017cc9b3  Audit.lean
+c07ab94f3ec7c462108b2ba515c0150a82f9dc4a9aff61cfe0da074c193301ac  Erdos727.lean
+c9d2ebd205fbacefb2ba8072fc87d2dfa62fc39a4506cdbfadd43e0fa0322065  Erdos727/Analytic/CharacterMertens.lean
+6f3586df6de92a53c15cce4ef62f2c6804b0cabd614758cc6bc67931237f2c2e  Erdos727/Analytic/CharacterPartialSums.lean
+e6fb27c28e62903aff7d52d1793c9c509425d705b15b3983327e76b4bb4824a1  Erdos727/Analytic/CharacterSums.lean
+482ce054dd0ceeb62aaaa0836218f30edb35cd7c3c63bc93638ba6b3eca0dc13  Erdos727/Analytic/DigitFourier.lean
+6933eda01d0baec7078be32c751f44c1a6200906d51434cce13b5e4ace469abf  Erdos727/Analytic/LFunctionLink.lean
+9090f6583519ade44c4e7c381eb62d204cf6364ebd849260f07a78a3a710494b  Erdos727/Analytic/Mertens.lean
+7a10f373d217b45882ba299956f42008d57760b4061944b95ef140259baaa8da  Erdos727/Analytic/MertensAP.lean
+9d880a515821de999e92eda74f891ffafe49a672bf8848eefdd9517917cf996d  Erdos727/Analytic/MertensAPProof.lean
+dabb84193e99dcdd915b291a5f8082dee6c942668d989b0ee3633236d0645e02  Erdos727/Analytic/MertensSource.lean
+7ad37f5a285ccabf4cee7c594d9750c883224c6c31d3da4013e7831d3ef6d495  Erdos727/Analytic/WeylSum.lean
+1f5b7c64aac324d83f2230b96657ff5f6780a3f097ba656eaf0a8be493b79f63  Erdos727/AxiomCheck.lean
+ce144b1aa003626a0faf1d4b78e30fc931c449f16c3ff6aa1c45b75dd4f484af  Erdos727/BuildAudit.lean
+2be089d13b4be0c4f4f97ffec084c68af9f7d71f8487bc848a5588ce12cac144  Erdos727/Carries.lean
+2e8a055eec4051aa455253e9d825c4f7182c81ab3487eda31322b07460615d2b  Erdos727/Count.lean
+8e3ff23a754ea67e889d45bbe7ed193007d5ca2249c3f3207f5275a87e792eb2  Erdos727/Defs.lean
+e2d2befe47a5ad860f45d53cd95622a29d46ca9a848728f780316cbe63ce7a09  Erdos727/DigitSets.lean
+35bc30e950d8c9ef6ecf6e2e7f99b70fa3f1dc18088e47a873b2814c2fbda465  Erdos727/Failure.lean
+48d038df9d7ba23b68b4f511529900d26a9b06e99059e80b3f99c884567d1c85  Erdos727/Final.lean
+6ba3c536944d5d69f00408bcd62881b3e8bb472dc4af1bb470ff1e53ac849b64  Erdos727/FormalConjectures.lean
+881a0c1c3b121ad69bc44e0478ae5aaa17eca4b81dbc2d7b1358bcf7569ff949  Erdos727/Main.lean
+8bb62bccc1df8695f06ae6fd113c11a38240ccaa9df00c9c9093281472863708  Erdos727/Polynomial.lean
+0c794d2c68d78b06bcba626b76939fc5b79b3ba9c009a581190e962ea3fe1b18  Erdos727/Progression.lean
+9a272d035513da376ec9658d37a8d92d130cc35565804dfaf39ec20a37304e5d  Erdos727/Range/Large.lean
+9a70b496a94bf9f4960455b69c4ebd20996f823fe67c2b1aed2e39a707424216  Erdos727/Range/Medium.lean
+5371d4e8ce561fa26ff8141d234da1bb3a28fc4ef597b0a95a900c4944153e86  Erdos727/Range/Small.lean
+3ca361016df79845126925c522f23a97434bc227c58f475060ab0487605fad13  Erdos727/Range/Square.lean
+b39ab7daa5e95511b37da6c5bc0a25eab24e4b225dfa991fd3e5a7e4d262b245  Erdos727/Ranges.lean
+45f755c9ba1fb4216f5869311a512a1667347ac1e0cd4472ef71b0b3b36953f1  Erdos727/SmallPrimes.lean
+0ae6c6ed4a9d711dfd48257609c1976d86566e3aee64ca7620f25e73f2a960f6  lake-manifest.json
+55593a326868ecfe69214b1266f8738ca24485f08a184dabd4cb8e00757f5aaa  lakefile.toml
+8190e75a201741065fe508b28955dd64dd72d090babe5f70ce6848879d68ae88  lean-toolchain
+f641c83d73d45fcb92339da07b7cb7295ac2cbe6ab21058069ad77afd01e5fc8  scripts/check_axioms.py
+49b13e3e59c883b5fbb0e9d0c0a0954acb126ed25e69e05a6abddeb1c2a1ded6  scripts/check_fc_source.py
+976975281fdba007ad59447766283f7b523802daa181da769852b26d3acb7a43  scripts/check.sh
+```

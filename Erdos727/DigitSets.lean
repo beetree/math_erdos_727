@@ -171,7 +171,7 @@ theorem carryDigits_subset_range {p j : ℕ} (hp : 0 < p) (hj1 : 1 ≤ j) (hj : 
   carryDigits_subset_range' hp hj1 hj J
 
 /-- Every digit set in `carryDigits` is an interval `Ico s (s + m)` with `m ≤ p`. -/
-theorem carryDigits_interval {p j : ℕ} (hp : 0 < p) (hj : j ≤ p) (J : ℕ) :
+theorem carryDigits_interval {p j : ℕ} (hp : 0 < p) (_hj : j ≤ p) (J : ℕ) :
     ∀ D ∈ carryDigits p j J, ∃ s m, D = Ico s (s + m) ∧ m ≤ p := by
   have h1 : ∃ s m, ({p - j} : Finset ℕ) = Ico s (s + m) ∧ m ≤ p :=
     ⟨p - j, 1, (Nat.Ico_succ_singleton (p - j)).symm, hp⟩

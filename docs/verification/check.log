@@ -1,0 +1,28 @@
+--- check.sh
+✔ [8784/8792] Built Erdos727.Analytic.DigitFourier (286s)
+✔ [8785/8792] Built Erdos727.Range.Small (286s)
+✔ [8786/8792] Built Erdos727.Range.Large (301s)
+✔ [8787/8792] Built Erdos727.Range.Medium (126s)
+✔ [8788/8792] Built Erdos727.Main (49s)
+✔ [8789/8792] Built Erdos727.Final (4.8s)
+ℹ [8790/8792] Built Erdos727.BuildAudit (44s)
+info: Erdos727/BuildAudit.lean:19:0: 'Erdos727.erdos727_k3' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Erdos727/BuildAudit.lean:20:0: 'Erdos727.erdos727_k2' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [8791/8792] Built Erdos727 (63s)
+Build completed successfully (8792 jobs).
+'Erdos727.good_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.exists_progression' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.card_failSet_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.sq_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.small_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.medium_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.large_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.infinite_good' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.k3_of_mertensAP' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.k2_of_mertensAP' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.mertensAP_210' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.erdos727_k3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Erdos727.erdos727_k2' depends on axioms: [propext, Classical.choice, Quot.sound]
+Verified 13 axiom reports: standard foundations only.
+
+[exited with code 0]

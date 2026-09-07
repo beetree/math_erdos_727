@@ -8,16 +8,20 @@ and [`third_party/formal_conjectures`](third_party/formal_conjectures)).
 
 ## Status
 
-**Work in progress.**  The verified boundary is recorded by `bash scripts/check.sh`
-(`sorry`/`axiom` scan, Formal Conjectures source comparison, `lake build`, axiom audit of
-`Audit.lean`).  Until every module is `sorry`-free the endpoints `erdos727_k3`, `erdos727_k2`
-in [`Erdos727/Final.lean`](Erdos727/Final.lean) depend on `sorryAx`; the conditional theorems
-`k3_of_mertensAP`, `k2_of_mertensAP` in [`Erdos727/Main.lean`](Erdos727/Main.lean) isolate the
-single analytic input `MertensAP 210` (Mertens' second theorem in arithmetic progressions
-modulo 210, with `O(1/log x)` error), which is proved in the `Erdos727/Analytic/Character*`
-chain.
+**Complete.**  Every module compiles without `sorry`, and the endpoints
+`Erdos727.erdos727_k3 : formalConjecturesStatement_k3` and
+`Erdos727.erdos727_k2 : formalConjecturesStatement_k2` in [`Erdos727/Final.lean`](Erdos727/Final.lean)
+depend only on `propext`, `Classical.choice`, `Quot.sound`.  This is enforced at build time by
+[`Erdos727/BuildAudit.lean`](Erdos727/BuildAudit.lean) (`assert_standard_axioms`) and checked again
+by `bash scripts/check.sh` (`sorry`/`axiom`/`native_decide` scan, Formal Conjectures source
+comparison, `lake build`, axiom audit of every declaration listed in `Audit.lean`).  The analytic
+input `MertensAP 210` (Mertens' second theorem in arithmetic progressions modulo 210, with
+`O(1/log x)` error) is proved in the `Erdos727/Analytic/Character*` and `MertensAPProof` modules
+from Mathlib's `L(1, χ) ≠ 0`; the conditional theorems `k3_of_mertensAP`, `k2_of_mertensAP` in
+[`Erdos727/Main.lean`](Erdos727/Main.lean) record the reduction separately.  See
+[docs/VERIFICATION.md](docs/VERIFICATION.md) for the recorded build transcript.
 
-Module status (✓ = compiles with no `sorry`; ◐ = partially proved; ○ = statements only):
+Module status (✓ = compiles with no `sorry`):
 
 | Module | Content | Status |
 | --- | --- | --- |
@@ -34,14 +38,14 @@ Module status (✓ = compiles with no `sorry`; ◐ = partially proved; ○ = sta
 | `Range/Small` | very small primes `≤ 0.02 X` (§7) | ✓ |
 | `Analytic/WeylSum` | `e`, `dist₁`, geometric sums, Weyl differencing (§8) | ✓ |
 | `Analytic/DigitFourier` | finite Fourier expansion of digit sets, `ℓ¹` bound (§9) | ✓ |
-| `Range/Medium` | medium primes and strips `≤ 0.35 X` (§9–10) | ○ |
+| `Range/Medium` | medium primes and strips `≤ 0.35 X` (§9–10) | ✓ |
 | `Range/Large` | large primes `≤ 0.60 X` given `MertensAP 210` (§11) | ✓ |
 | `Main` | `#failSet ≤ 0.98 X`, conditional endpoints, `k = 2` from `k = 3` (§12) | ✓ |
 | `Analytic/MertensSource` | vendored Mertens theorems (see `third_party/mertens`) | ✓ |
 | `Analytic/Mertens` | `mertens_second`, block sums (6.3), definition of `MertensAP` | ✓ |
 | `Analytic/CharacterPartialSums`, `LFunctionLink`, `CharacterMertens` | character partial sums, `lim ∑χ(n)/n = L(1,χ)`, twisted Mertens (§6) | ✓ |
-| `Analytic/MertensAPProof` | orthogonality and the `Weight` framework: `MertensAP q` (§6) | ○ |
-| `Analytic/MertensAP`, `Final` | `mertensAP_210`, unconditional endpoints | ✓ (modulo the chain) |
+| `Analytic/MertensAPProof` | orthogonality and the `Weight` framework: `MertensAP q` (§6) | ✓ |
+| `Analytic/MertensAP`, `Final`, `BuildAudit` | `mertensAP_210`, unconditional endpoints, build-time axiom assertions | ✓ |
 
 ## Design decisions (deviations from the manuscript)
 
