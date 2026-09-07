@@ -1,0 +1,642 @@
+% Self-contained source. Compile with: latexmk -pdf erdos_727_partial_proof.tex
+% No external bibliography, figures, or nonstandard local files are required.
+% Author and AI-assistance identifiers supplied by Johan Land.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{newtxtext}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{newtxmath}
+\usepackage[margin=26mm,headheight=14pt,headsep=7mm]{geometry}
+\usepackage{microtype,booktabs,array,needspace}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={A carry-counting approach to the k=3 case of Erdos Problem 727},
+  pdfsubject={Candidate proof; draft for review},pdfauthor={Johan Land}}
+
+\newcommand{\paperauthor}{Johan Land}
+\newcommand{\paperaffiliation}{Independent Researcher}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\R}{\mathbb R}
+\newcommand{\LL}{\mathcal L}
+\newcommand{\1}{\mathbf 1}
+\DeclareMathOperator{\Li}{Li}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\numberwithin{equation}{section}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape Erd\H{o}s Problem 727: the case \(k=3\)}
+\fancyhead[R]{\small Draft for review}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1em}
+\setlength{\textfloatsep}{12pt plus 3pt minus 3pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\renewcommand{\arraystretch}{1.18}
+\allowdisplaybreaks[1]
+\raggedbottom
+
+\title{\vspace{-1.3em}A carry-counting approach to the \(k=3\) case\\
+of Erd\H{o}s Problem 727}
+\author{\paperauthor\\[0.25em]\small\paperaffiliation}
+\date{6 September 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1.2em}
+\begin{abstract}
+We present a candidate unconditional proof that infinitely many positive integers
+\(n\) satisfy \(((n+3)!)^2\mid(2n)!\), and hence also \(((n+2)!)^2\mid(2n)!\).
+The quadratic \(f(t)=210t^2+391t+179\) makes each of \(f(t)+1,f(t)+2,f(t)+3\)
+a product of two linear forms. A fixed arithmetic progression handles small
+primes; direct carry counting, uniform quadratic exponential-sum estimates,
+and a finite residue calculation bound the remaining failures. The only
+external analytic input is the classical prime number theorem in fixed
+arithmetic progressions. The argument gives a positive proportion of successful
+parameters on the progression and \(\gg\sqrt Z\) successful integers \(n\leq Z\).
+\end{abstract}
+\vspace{0.2em}
+\noindent\textbf{Status.} This is a candidate proof circulated for scrutiny. The accompanying
+Lean development is complete on the author's machine (see the closing section);
+independent expert verification and independent reproduction of that build
+remain pending. The general case of arbitrary fixed \(k\) is not
+claimed here.
+
+\section{Statement and strategy}
+
+Erd\H{o}s, Graham, Ruzsa and Straus asked whether, for every fixed \(k\geq2\),
+there are infinitely many \(n\) for which \(((n+k)!)^2\mid(2n)!\)
+\cite[p.~90]{EGRS}. We consider the case \(k=3\), using
+\[
+ f(t)=210t^2+391t+179.
+\]
+
+\begin{theorem}\label{thm:main}
+There exist fixed integers \(Q\geq1\), \(0\leq t_0<Q\), and \(X_0\geq1\)
+such that for every integer \(X\geq X_0\), at least \(X/100\) integers
+\(v\in[X,2X)\) satisfy
+\begin{equation}\label{eq:target}
+ \bigl((f(t_0+Qv)+3)!\bigr)^2\mid\bigl(2f(t_0+Qv)\bigr)!.
+\end{equation}
+Consequently there is a constant \(c_*>0\) such that, for all sufficiently
+large \(Z\),
+\[
+ \#\{1\leq n\leq Z:((n+3)!)^2\mid(2n)!\}\geq c_*\sqrt Z.
+\]
+\end{theorem}
+
+\begin{corollary}\label{cor:k2}
+There are infinitely many positive integers \(n\) such that
+\(((n+2)!)^2\mid(2n)!\).
+\end{corollary}
+
+Write \(A(n)=(n+1)(n+2)(n+3)\) and \(B(n)=\binom{2n}{n}\).
+Since \((n+3)!=n!A(n)\) and \((2n)!=(n!)^2B(n)\), cancellation gives
+\begin{equation}\label{eq:cancel}
+ ((n+3)!)^2\mid(2n)!\quad\Longleftrightarrow\quad A(n)^2\mid B(n).
+\end{equation}
+For a prime \(p\), Legendre's formula yields the carry identity
+\begin{equation}\label{eq:carry}
+ c_p(n):=v_p(B(n))
+ =\sum_{h\geq1}\left(\left\lfloor\frac{2n}{p^h}\right\rfloor
+       -2\left\lfloor\frac n{p^h}\right\rfloor\right)
+ =\sum_{h\geq1}\1_{\{n/p^h\}\geq1/2}.
+\end{equation}
+Thus it suffices to prove \(c_p(n)\geq2v_p(A(n))\) for every prime dividing
+\(A(n)\). We arrange this for all bounded primes by congruences, then bound
+the union of the remaining failure events. No independence between primes
+or between the six linear factors is assumed.
+
+Here \(\{x\}=x-\lfloor x\rfloor\), \(e(x)=\exp(2\pi i x)\), and \(\|x\|\)
+denotes distance to the nearest integer. All sums indexed by \(p\) are over
+primes. All moduli, constants, and exponent margins are fixed before
+\(X\to\infty\); implicit constants may depend on them.
+
+\section{The polynomial family and a fixed progression}\label{sec:arithmetic}
+
+The three factorizations are
+\begin{equation}\label{eq:factors}
+\begin{aligned}
+ f(t)+1&=(35t+36)(6t+5),\\
+ f(t)+2&=(t+1)(210t+181),\\
+ f(t)+3&=(15t+14)(14t+13).
+\end{aligned}
+\end{equation}
+Let \(L_i(t)=a_it+b_i\), \(1\leq i\leq6\), denote the displayed factors,
+and let \(j_i\in\{1,2,3\}\) be the associated shift. Table~\ref{tab:forms}
+records all constants needed below. Direct expansion verifies
+\begin{equation}\label{eq:coordinates}
+ f(t)=\alpha_iL_i(t)^2+\beta_iL_i(t)-j_i,
+ \qquad f'(-b_i/a_i)=c_i.
+\end{equation}
+\begin{table}[ht]
+\centering
+\caption{The six factors; \(d_i\) is the reduced denominator of \(\alpha_i\).}
+\label{tab:forms}
+\begin{tabular}{@{}clrrrrr@{}}
+\toprule
+\(i\)&\(L_i(t)\)&\(j_i\)&\(c_i\)&\(\alpha_i\)&\(\beta_i\)&\(d_i\)\\
+\midrule
+1&\(35t+36\)&1&\(-41\)&\(6/35\)&\(-41/35\)&35\\
+2&\(6t+5\)&1&41&\(35/6\)&\(41/6\)&6\\
+3&\(t+1\)&2&\(-29\)&210&\(-29\)&1\\
+4&\(210t+181\)&2&29&\(1/210\)&\(29/210\)&210\\
+5&\(15t+14\)&3&\(-1\)&\(14/15\)&\(-1/15\)&15\\
+6&\(14t+13\)&3&1&\(15/14\)&\(1/14\)&14\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Every \(L_i\) is primitive, and all prime factors of the slopes lie in
+\(\{2,3,5,7\}\). The within-pair resultants have absolute values
+\(41,29,1\). A prime dividing factors from different pairs divides a
+nonzero difference between two of \(f+1,f+2,f+3\), so is at most~2.
+Consequently a prime \(p>1000\) divides at most one \(L_i(t)\), and its
+root class satisfies \(f'(t)\equiv c_i\not\equiv0\pmod p\).
+
+\subsection{Small primes by lifting and the Chinese remainder theorem}
+
+Set \(Y=1000\) and \(G(t)=\prod_iL_i(t)=A(f(t))\). Since
+\(G(0)=180\cdot181\cdot182\), its prime support is
+\(S=\{2,3,5,7,13,181\}\). For every prime \(p\leq Y\) outside \(S\),
+impose \(t\equiv0\pmod p\), ensuring \(p\nmid G(t)\).
+For \(p\in S\), set \(e_p=v_p(G(0))\) and choose a lifting depth
+\(\lambda_p\) as follows:
+\begin{center}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\(p\)&2&3&5&7&13&181\\
+\midrule
+\(e_p\)&3&2&1&1&1&1\\
+\(\lambda_p\)&3&3&2&2&2&2\\
+\(\lambda_p+2e_p\)&9&7&4&4&4&4\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each \(\lambda_p\) is larger than every individual valuation \(v_p(179+j)\),
+\(1\leq j\leq3\). If \(r_p\) is the least nonnegative residue of~179
+modulo \(p^{\lambda_p}\), prescribe
+\begin{equation}\label{eq:local}
+ f(t)\equiv r_p+p^{\lambda_p}(p^{2e_p}-1)\pmod{p^{\lambda_p+2e_p}},
+ \qquad t\equiv0\pmod p.
+\end{equation}
+This has a unique lift of the root \(t=0\pmod p\), because
+\(f'(0)=391=17\cdot23\) is coprime to every \(p\in S\).
+Indeed, for \(r\geq1\),
+\[
+ f(u+zp^r)\equiv f(u)+zp^rf'(u)\pmod{p^{r+1}};
+\]
+when the derivative is a unit, varying \(z\pmod p\) realizes each next
+target digit exactly once.
+
+Condition~\eqref{eq:local} preserves each \(v_p(f(t)+j)=v_p(179+j)\)
+and prescribes \(2e_p\) consecutive digits equal to \(p-1\) in positions
+\(\lambda_p,\ldots,\lambda_p+2e_p-1\) of \(f(t)\). Each produces a carry on doubling,
+even for \(p=2\), regardless of the incoming carry. Hence
+\(c_p(f(t))\geq2e_p=2v_p(G(t))\).
+The Chinese remainder theorem now gives \(0\leq t_0<Q\), with
+\begin{equation}\label{eq:Q}
+ Q=\prod_{p\in S}p^{\lambda_p+2e_p}
+   \prod_{\substack{p\leq Y\\p\notin S}}p,
+\end{equation}
+such that every \(t=t_0+Qv\) satisfies the required inequalities for all
+\(p\leq Y\). The modulus is fixed, however large it may be.
+
+Write
+\[
+ F(v)=f(t_0+Qv),\qquad \LL_i(v)=L_i(t_0+Qv).
+\]
+For \(v\in[X,2X)\), all six forms are positive and at most \(CX\), for
+some fixed \(C\geq1\), and \(F(v)\asymp X^2\). For \(p>Y\), the slope
+\(a_iQ\) is a unit modulo every power of \(p\).
+
+\subsection{Repeated factors and failure events}
+
+Discard parameters for which \(p^2\mid\LL_i(v)\) for some \(i\) and
+\(p>Y\). Each condition is one class modulo \(p^2\), so their union has size
+\begin{equation}\label{eq:square}
+ E_{\rm sq}(X)\leq6X\sum_{p>Y}\frac1{p^2}
+       +6\pi(\sqrt{CX})
+ \leq\frac{6X}{Y}+o(X)=\frac3{500}X+o(X).
+\end{equation}
+Here \(\sum_{m>Y}m^{-2}\leq1/Y\), and \(\pi(z)\leq z\) suffices for
+the endpoint error. For a remaining parameter, every prime \(p>Y\)
+dividing \(G(t)\) has exponent exactly one. If \(p\mid\LL_i(v)\), then
+\(F(v)\equiv-j_i\pmod p\); since \(p>6\), this supplies a carry at
+level~1. It remains to exclude
+\begin{equation}\label{eq:bad}
+ p\mid\LL_i(v),\qquad
+ \{F(v)/p^h\}<\tfrac12\quad\text{for every }h\geq2.
+\end{equation}
+We bound the union of these events in the ranges below.
+
+\section{Prime harmonic sums}\label{sec:primes}
+
+The only external analytic theorem used here is the classical estimate
+\begin{equation}\label{eq:pnt}
+ \pi(x;d,a)=\frac{\Li(x)}{\varphi(d)}
+       +O_d\bigl(x\exp(-c_d\sqrt{\log x})\bigr),
+ \qquad (a,d)=1,
+\end{equation}
+for fixed \(d\), with \(c_d>0\); see \cite[\S27.12, (27.12.5) and
+(27.12.8)]{DLMF}. Here \(\pi(x;d,a)\) counts primes in the indicated
+class, \(\varphi\) is Euler's totient, and
+\(\Li(x)=\int_2^x du/\log u\). In particular,
+\(\pi(CX)=o(X)\) for fixed \(C\).
+
+\begin{lemma}\label{lem:prime}
+For fixed \(d,a\) with \((a,d)=1\),
+\begin{equation}\label{eq:mertens}
+ \sum_{\substack{p\leq z\\p\equiv a\ (d)}}\frac1p
+ =\frac{\log\log z}{\varphi(d)}+B_{d,a}+o(1).
+\end{equation}
+Consequently, if \(R\) is a fixed set of reduced classes modulo \(d\),
+\(0<\alpha<\beta\), and \(C>0\) is fixed, then
+\begin{equation}\label{eq:bandprimes}
+ \sum_{\substack{X^\alpha<p\leq CX^\beta\\p\bmod d\in R}}\frac1p
+ =\frac{|R|}{\varphi(d)}\log\frac\beta\alpha+o(1).
+\end{equation}
+Also, for fixed \(P>1\), \(c>0\), and \(\delta>0\),
+\begin{equation}\label{eq:weighted}
+ \lim_{X\to\infty}\sum_{P<p\leq X^\delta}\frac1p
+       \exp\!\left(-\frac{c\log X}{\log p}\right)
+ =\int_0^\delta e^{-c/y}\frac{dy}{y}
+ =E_1(c/\delta),
+\end{equation}
+where \(E_1(z)=\int_z^\infty e^{-w}\,dw/w\).
+\end{lemma}
+
+\begin{proof}
+Partial summation writes the left side of~\eqref{eq:mertens} as
+\(\pi(z;d,a)/z+\int_2^z\pi(u;d,a)u^{-2}\,du\). The main term
+in~\eqref{eq:pnt} gives \((\log\log z)/\varphi(d)\) plus a constant;
+the error integral converges because
+\(\int_2^\infty e^{-c_d\sqrt{\log u}}\,du/u<\infty\).
+Taking differences gives~\eqref{eq:bandprimes}, including the unrestricted
+prime sum when \(d=1\).
+
+For~\eqref{eq:weighted}, write the unrestricted sum as
+\(H(z)=\log\log z+B+R_0(z)\), where \(R_0(z)\to0\), and integrate
+\(g_X(z)=\exp(-c\log X/\log z)\) against \(dH(z)\) on \((P,X^\delta]\).
+The main term is
+\(\int_{\log P/\log X}^{\delta}e^{-c/y}\,dy/y\); its missing lower tail
+tends to zero. To control the error, fix \(Z>P\). The part below~\(Z\)
+tends to zero as \(X\to\infty\). On \([Z,X^\delta]\), integration by
+parts and monotonicity of \(g_X\) bound the error by
+\(2\sup_{z\geq Z}|R_0(z)|g_X(X^\delta)\).
+First let \(X\to\infty\), then \(Z\to\infty\). The substitution \(w=c/y\)
+gives the last equality in~\eqref{eq:weighted}.
+\end{proof}
+
+\section{Very small primes}\label{sec:small}
+
+Fix
+\[
+ \delta=\frac1{20},\qquad \rho=\frac{1001}{2000},\qquad
+ c=\frac12\log(1/\rho).
+\]
+For \(Y<p\leq X^\delta\), put
+\(\ell=\lfloor\log X/(2\log p)\rfloor\). Then \(\ell\geq10\) and
+\(p^\ell\leq\sqrt X\). On the unique root class of \(\LL_i\pmod p\),
+\(F'(v)\equiv Qc_i\not\equiv0\pmod p\). The lifting argument above
+therefore makes \(v\mapsto F(v)\) a bijection from that class modulo
+\(p^\ell\) onto the residues congruent to \(-j_i\pmod p\).
+
+The units digit is \(p-j_i\) and already gives a carry. To avoid a carry
+at the next level, there are \((p-1)/2\) choices for the next digit;
+with no incoming carry thereafter, each later digit has \((p+1)/2\)
+choices. Thus the number of residues avoiding every carry at levels
+\(2,\ldots,\ell\) is
+\[
+ \frac{p-1}{2}\left(\frac{p+1}{2}\right)^{\ell-2}
+ \leq p^{\ell-1}\rho^{\ell-1}.
+\]
+Each residue occurs at most \(X/p^\ell+1\) times, giving
+\begin{equation}\label{eq:smalllocal}
+ \#\{v\in[X,2X):\text{\eqref{eq:bad} holds for }i,p\}
+ \leq\left(\frac Xp+p^{\ell-1}\right)\rho^{\ell-1}.
+\end{equation}
+The sum of the second terms, over all primes in this range and all six
+forms, is \(O(\sqrt X\log\log X)=o(X)\). Since
+\[
+ \ell-1\geq\frac{\log X}{2\log p}-2,
+ \qquad \rho^{\ell-1}\leq\rho^{-2}
+                  \exp\!\left(-\frac{c\log X}{\log p}\right),
+\]
+Lemma~\ref{lem:prime} bounds the union count by
+\begin{equation}\label{eq:small}
+ \limsup_{X\to\infty}\frac{E_{\rm small}(X)}X
+ \leq6\rho^{-2}E_1(c/\delta)<\frac1{100}.
+\end{equation}
+For the strict numerical bound, \(\rho^{-2}<4\),
+\(c/\delta=10\log(2000/1001)>6\), and \(E_1(z)\leq e^{-z}/z\);
+hence the expression is less than \(4e^{-6}<1/100\).
+The comparisons follow, without numerical integration, from
+\(\log x\geq2(x-1)/(x+1)\) for \(x\geq1\) and
+\(e^3>\sum_{r=0}^8 3^r/r!>20\).
+
+\section{Medium primes and uniformity}\label{sec:medium}
+
+\subsection{A quadratic exponential-sum bound}
+
+\begin{lemma}\label{lem:quadratic}
+Let \(q\geq3\) be odd, \((a,q)=1\), and let \(I\) be an interval of
+\(L\) consecutive integers. Uniformly in these data and in \(\theta\in\R\),
+\begin{equation}\label{eq:quadratic}
+ \left|\sum_{r\in I}e\!\left(\frac{ar^2}{q}+\theta r\right)\right|
+ \ll\left(\frac L{\sqrt q}+\sqrt q\right)\log(2q).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Suppose first \(L\leq q\), and translate \(I\) to \(0\leq r<L\).
+For \(b\pmod q\), set
+\(G_b=\sum_{s\bmod q}e((as^2-bs)/q)\). Squaring and putting the
+difference of the two variables equal to \(h\) gives
+\[
+ |G_b|^2=\sum_{h\bmod q}e\!\left(\frac{ah^2-bh}{q}\right)
+                 \sum_{s\bmod q}e\!\left(\frac{2ahs}{q}\right)=q,
+\]
+since \(2a\) is a unit modulo \(q\). Fourier inversion yields
+\[
+ \sum_{r=0}^{L-1}e\!\left(\frac{ar^2}{q}+\theta r\right)
+ =\frac1q\sum_{b\bmod q}G_b
+                  \sum_{r=0}^{L-1}e\bigl((\theta+b/q)r\bigr).
+\]
+The inner absolute value is at most
+\(\min(L,(2\|\theta+b/q\|)^{-1})\), interpreted as \(L\) at integral
+frequencies. The points \(\theta+b/q\pmod1\) are \(1/q\)-spaced, so
+only a bounded number lie in each distance shell of width \(1/q\) from
+an integer. Summing the geometric-sum bounds gives \(O(q\log(2q))\),
+uniformly in \(\theta\). Since \(|G_b|=\sqrt q\), the desired short-interval
+bound is \(O(\sqrt q\log(2q))\). For general \(L\), divide \(I\) into
+at most \(L/q+1\) intervals of length at most~\(q\).
+\end{proof}
+
+\subsection{Uniform distribution in each band}
+
+Fix \(\eta=10^{-6}\) and \(\gamma_j=2/j\), \(4\leq j\leq40\).
+For \(J=4,\ldots,39\), use the band
+\begin{equation}\label{eq:bands}
+ X^{\gamma_{J+1}+\eta}<p\leq X^{\gamma_J-\eta}.
+\end{equation}
+These exponent intervals are nonempty, since
+\(\gamma_J-\gamma_{J+1}\geq1/780>2\eta\).
+
+Fix \(i\) and choose the least nonnegative root \(v_0\) of
+\(\LL_i\pmod p\). Conditional on \(p\mid\LL_i(v)\), write
+\(v=v_0+pz\), where \(z\) runs over \(L=X/p+O(1)\) consecutive
+integers. With \(D=210Q^2\),
+\begin{equation}\label{eq:expandedphase}
+ F(v_0+pz)=Dp^2z^2+pF'(v_0)z+F(v_0).
+\end{equation}
+We show that the vectors
+\[
+ \bigl(\{F(v)/p^2\},\ldots,\{F(v)/p^J\}\bigr)
+\]
+are asymptotically uniformly distributed in \([0,1)^{J-1}\),
+\emph{uniformly over primes in the band}.
+
+Fix a nonzero integer frequency \((h_2,\ldots,h_J)\), and let \(H\)
+be its highest nonzero index. If \(H\geq3\), the quadratic coefficient
+of the phase \(\sum_{r=2}^Jh_rF(v_0+pz)/p^r\) has reduced denominator
+\(q=p^{H-2}\), for all sufficiently large \(X\). Indeed, its numerator
+modulo \(p\) is \(Dh_H\neq0\pmod p\) once \(p\) exceeds the prime
+factors of the fixed nonzero integer \(Dh_H\).
+Lemma~\ref{lem:quadratic}, allowing the arbitrary real linear coefficient,
+gives the normalized bound
+\begin{equation}\label{eq:uniformquad}
+ O\!\left(\left(p^{-(H-2)/2}+\frac{p^{H/2}}X\right)\log X\right)=o(1)
+\end{equation}
+uniformly in~\eqref{eq:bands}: here \(p\geq X^\delta\), \(H\leq J\), and
+\(p^{H/2}/X\leq p^{J/2}/X\leq X^{-\eta J/2}\).
+If \(H=2\), the quadratic coefficient is the integer \(Dh_2\), and the
+nonconstant phase reduces to \(h_2F'(v_0)z/p\). Because
+\(F'(v_0)\equiv Qc_i\pmod p\), its numerator modulo \(p\) is the fixed
+nonzero integer \(h_2Qc_i\). The geometric sum is \(O(p)\), with
+normalized bound
+\begin{equation}\label{eq:uniformlinear}
+ O(p/L)=O(p^2/X)=o(1),
+\end{equation}
+uniformly, since \(p\leq X^{1/2-\eta}\).
+
+For completeness, fixed-frequency cancellation suffices uniformly for the
+box \([0,1/2)^{J-1}\). Approximate its indicator above and below by
+continuous periodic functions whose integrals differ arbitrarily little,
+then approximate those functions by finite trigonometric polynomials.
+At each stage only finitely many frequencies occur, so
+\eqref{eq:uniformquad}--\eqref{eq:uniformlinear} hold uniformly for all
+of them. First let \(X\to\infty\), then refine the approximation.
+It follows that, uniformly over the band, the proportion of conditioned
+parameters without a carry at levels \(2,\ldots,J\) is
+\begin{equation}\label{eq:box}
+ 2^{1-J}+o(1).
+\end{equation}
+
+Summing~\eqref{eq:box} times \(X/p+O(1)\) over the primes incurs only
+\(o(X)\): the reciprocal-prime sum in a fixed band is bounded by
+Lemma~\ref{lem:prime}, the discrepancy is uniform, and the endpoint
+terms total \(O(\pi(X^{1/2-\eta}))=o(X)\). Summing the six forms and
+all 36 bands therefore gives
+\begin{equation}\label{eq:medium}
+\begin{aligned}
+ \limsup_{X\to\infty}\frac{E_{\rm med}(X)}X
+ &\leq6\sum_{J=4}^{39}2^{1-J}\log\frac{J+1}{J}\\
+ &\leq6\cdot\frac14\sum_{J=4}^{\infty}2^{1-J}
+ =\frac38.
+\end{aligned}
+\end{equation}
+We used \(\log(1+1/J)\leq1/J\leq1/4\).
+
+\subsection{Boundary strips}
+
+The prime exponents between \(\delta=1/20\) and \(1/2+\eta\) not covered
+by~\eqref{eq:bands} lie in the 37 strips
+\[
+ X^{\gamma_j-\eta}\leq p\leq X^{\gamma_j+\eta},\qquad 4\leq j\leq40.
+\]
+Count every event \(p\mid\LL_i(v)\) in these strips, ignoring carries.
+Lemma~\ref{lem:prime} and \(X/p+O(1)\) give
+\begin{equation}\label{eq:strips}
+\begin{aligned}
+ \limsup_{X\to\infty}\frac{E_{\rm bdry}(X)}X
+ &\leq6\sum_{j=4}^{40}\log\frac{\gamma_j+\eta}{\gamma_j-\eta}\\
+ &\leq12\eta\sum_{j=4}^{40}\frac1{\gamma_j-\eta}
+ \leq\frac{6\eta\cdot814}{1-20\eta}<\frac1{100}.
+\end{aligned}
+\end{equation}
+Here \(\sum_{j=4}^{40}j=814\); endpoint errors are \(o(X)\), since all
+primes involved are at most \(X^{1/2+\eta}\). Any overlaps at boundaries
+are harmless in these union bounds.
+
+\section{Large primes and a finite residue calculation}\label{sec:large}
+
+Suppose \(p>X^{1/2+\eta}\) divides \(L_i(t)\), with \(t=t_0+Qv\), and
+write \(L_i(t)=pm\). Then \(m\geq1\), and uniformly in this range
+\begin{equation}\label{eq:correction}
+ \frac mp\leq\frac{CX}{p^2}=O(X^{-2\eta})=o(1),\qquad
+ \frac{f(t)}{p^2}=\alpha_i m^2+\beta_i\frac mp-\frac{j_i}{p^2}.
+\end{equation}
+For \(i\neq3\), Table~\ref{tab:forms} shows that \(d_i\mid a_i\) and
+\((b_i,d_i)=1\). Reducing \(L_i(t)=pm\) modulo \(d_i\) gives
+\begin{equation}\label{eq:mclass}
+ m\equiv b_ip^{-1}\pmod{d_i}.
+\end{equation}
+As the unit class of \(p\) varies, this permutes the unit classes of
+\(m\). The relation uses the original coefficients \(a_i,b_i\), so
+restricting \(t\) to the CRT progression does not change it.
+
+The possible fractional parts of \(\alpha_i m^2\), for unit \(m\), are
+listed in Table~\ref{tab:residues}. Each distinct value has equally many
+preimages: squaring is a homomorphism on the finite unit group with
+constant fiber size, and the numerator of \(\alpha_i\) is a unit modulo
+\(d_i\). Thus the last column is the fraction of unit classes for which
+this fractional part is below \(1/2\).
+\begin{table}[ht]
+\centering
+\caption{Large-prime residues. Divide the listed numerators by \(d_i\)
+to obtain the fractional parts.}
+\label{tab:residues}
+\begin{tabular}{@{}crlc@{}}
+\toprule
+\(i\)&\(d_i\)&Numerators of the fractional parts&\(\theta_i\)\\
+\midrule
+1&35&\(6,19,24,26,31,34\)&\(1/6\)\\
+2&6&\(5\)&0\\
+4&210&\(1,79,109,121,151,169\)&\(1/3\)\\
+5&15&\(11,14\)&0\\
+6&14&\(1,9,11\)&\(1/3\)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+No listed fraction is \(0\) or \(1/2\). The finite sets have positive
+distance from both the integers and \(1/2\). By~\eqref{eq:correction},
+the correction tends uniformly to zero, so for sufficiently large \(X\)
+it neither crosses \(1/2\) nor wraps around an integer. Every listed
+fraction above \(1/2\) therefore supplies a carry at level \(p^2\).
+Failures lie in a fixed set \(R_i\) of reduced prime classes modulo
+\(d_i\), with \(|R_i|/\varphi(d_i)=\theta_i\), by~\eqref{eq:mclass}.
+
+The form \(i=3\) is favorable for a different reason:
+\[
+ \frac{f(t)}{p^2}=210m^2-\frac{29m}{p}-\frac2{p^2}.
+\]
+Its correction is strictly negative and tends uniformly to zero. It
+lies in \((-1/2,0)\) for large \(X\), so the fractional part lies in
+\((1/2,1)\). This always gives the second carry; put \(\theta_3=0\).
+
+Since \(p\leq CX\) whenever \(p\mid\LL_i(v)\), the large-prime union count
+satisfies
+\[
+ E_{\rm large}(X)\leq
+ \sum_{i\neq3}\ \sum_{\substack{X^{1/2+\eta}<p\leq CX\\
+                          p\bmod d_i\in R_i}}
+                      \left(\frac Xp+O(1)\right).
+\]
+The total endpoint error is \(O(\pi(CX))=o(X)\), even though \(C\) may
+be large, because it is fixed. Lemma~\ref{lem:prime} and
+\(\sum_i\theta_i=1/6+1/3+1/3=5/6\) give
+\begin{equation}\label{eq:large}
+ \limsup_{X\to\infty}\frac{E_{\rm large}(X)}X
+ \leq\frac56\log\frac1{1/2+\eta}
+ <\frac56\log2<\frac7{12}.
+\end{equation}
+The last inequality follows from \(\log2<7/10\); the first four terms
+of the exponential series already give \(e^{7/10}>2\).
+
+\section{Completion of the proof}\label{sec:completion}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main} and Corollary~\ref{cor:k2}]
+All primes \(p\leq Y\) satisfy the carry inequalities throughout the
+fixed progression. After the repeated-factor exclusions, every failure
+at a larger prime lies in~\eqref{eq:bad}. The very small range, medium
+bands, boundary strips, and large range cover every such prime, and no
+prime divisor of any \(\LL_i(v)\) exceeds \(CX\).
+
+Let \(E(X)\) be the number of unsuccessful parameters in \([X,2X)\).
+The union bound, together with \eqref{eq:square}, \eqref{eq:small},
+\eqref{eq:medium}, \eqref{eq:strips}, and \eqref{eq:large}, gives
+\begin{equation}\label{eq:budget}
+ \limsup_{X\to\infty}\frac{E(X)}X
+ <\frac3{500}+\frac1{100}+\frac38+\frac1{100}+\frac7{12}
+ =\frac{2953}{3000}<\frac{99}{100}.
+\end{equation}
+All constants and dimensions are fixed; the Fourier approximations were
+fixed before taking each asymptotic limit and only then refined. The
+finitely many estimates therefore hold simultaneously on a common tail.
+For every sufficiently large integer \(X\), at least \(X/100\) of the
+\(X\) integers in \([X,2X)\) succeed. By~\eqref{eq:cancel} this is
+exactly~\eqref{eq:target}.
+
+The map \(v\mapsto F(v)\) is strictly increasing for positive \(v\), so
+these parameters give infinitely many distinct successful integers.
+Also \(F(v)\leq C_2v^2\) for some fixed \(C_2>0\) and all sufficiently
+large~\(v\). Given large \(Z\), take
+\[
+ X=\left\lfloor\frac12\sqrt{Z/C_2}\right\rfloor.
+\]
+Every \(v\in[X,2X)\) then has \(F(v)\leq Z\), and at least
+\(X/100\gg\sqrt Z\) of these distinct values succeed. This proves the
+counting assertion. Finally, \(((n+2)!)^2\mid((n+3)!)^2\), so every
+successful \(n\) for \(k=3\) is also successful for \(k=2\).
+\end{proof}
+
+\section*{Relation to the accompanying Lean development}
+
+This note condenses the original candidate manuscript of 6 September 2026,
+retaining its analytic route and its five-term failure budget. The accompanying
+Lean source follows a reorganized proof: explicit local witnesses replace
+iterated lifting, proved Mertens estimates in fixed progressions replace the
+stronger quoted prime number theorem, and finite Fourier analysis replaces
+the limiting box approximation. Its failure budget also differs: the boundary
+strips are absorbed into the medium range, and the four range bounds are
+slackened to \(0.01+0.02+0.35+0.60=0.98<1\), which suffices for infinitude.
+It should not be described as a line-by-line certification of this
+presentation.
+
+The source endpoints \texttt{Erdos727.erdos727\_k3} and
+\texttt{Erdos727.erdos727\_k2} express the intended infinitude statements.
+The former unfolds to
+\begin{quote}\small\ttfamily
+Set.Infinite \{n : \(\N\) |\\
+\hspace*{1em}(Nat.factorial (n + 3))\,\^{}\,2\ \(\mid\)\ Nat.factorial (2 * n)\}
+\end{quote}
+The stronger quantitative conclusions above are not separately exported
+as named theorems in that development. At commit \texttt{c0100a2} of the
+repository, every module compiles without \texttt{sorry}, and \texttt{lake build}
+reports that \texttt{Erdos727.erdos727\_k2} depends only on the axioms
+\texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}; a
+build-time assertion enforces the same for \texttt{erdos727\_k3}. This
+was checked on the author's machine only; independent reproduction of the
+build has not been recorded, and the argument presented here does not depend
+on it. Independent expert review remains pending.
+
+\section*{AI assistance and provenance}
+
+This work was developed with assistance from \texttt{gpt-6-astra},
+\texttt{fable 5.1}, and \texttt{gemini-3.8}. Responsibility for the
+mathematical claims and the final manuscript rests with the author.
+
+\begin{thebibliography}{9}
+\bibitem{EGRS}
+P.~Erd\H{o}s, R.~L.~Graham, I.~Z.~Ruzsa, and E.~G.~Straus,
+\emph{On the prime factors of \(\binom{2n}{n}\)},
+Mathematics of Computation \textbf{29} (1975), no.~129, 83--92.
+The factorial-divisibility question appears on p.~90.
+\href{https://www.renyi.hu/~p_erdos/1975-27.pdf}{Original article}.
+
+\bibitem{DLMF}
+NIST Digital Library of Mathematical Functions,
+\emph{\S27.12: Asymptotic Formulas: Primes},
+equations (27.12.5) and (27.12.8).
+\url{https://dlmf.nist.gov/27.12}.
+\end{thebibliography}
+\end{document}

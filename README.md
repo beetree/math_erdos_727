@@ -1,6 +1,6 @@
 # Erdős Problem 727, case k = 3: Lean 4 formalization
 
-**Source:** [*Candidate proof for the cases k = 2 and k = 3 of Erdős Problem 727*](expert_advice/erdos_727_k2_k3_proof.md) (6 September 2026).
+**Paper:** [*A carry-counting approach to the k = 3 case of Erdős Problem 727*](erdos_727_partial_proof.pdf) (Johan Land, 6 September 2026; [LaTeX source](erdos_727_partial_proof.tex)), condensing the original manuscript [`expert_advice/erdos_727_k2_k3_proof.md`](expert_advice/erdos_727_k2_k3_proof.md).
 
 Erdős Problem 727 (Erdős, Graham, Ruzsa, Straus 1975, p. 90) asks whether, for every `k`, there
 are infinitely many `n` with `((n+k)!)² ∣ (2n)!`; the 1975 paper says this cannot be proved even
