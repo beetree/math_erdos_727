@@ -33,13 +33,14 @@ Module status (✓ = compiles with no `sorry`; ◐ = partially proved; ○ = sta
 | `DigitSets` | carry digit sets, `#(badSet) ≤ ((p+1)/2)^(ℓ-1)(X/p^ℓ + 1)` (§7) | ✓ |
 | `Range/Small` | very small primes `≤ 0.02 X` (§7) | ✓ |
 | `Analytic/WeylSum` | `e`, `dist₁`, geometric sums, Weyl differencing (§8) | ✓ |
-| `Analytic/DigitFourier` | finite Fourier expansion of digit sets, `ℓ¹` bound (§9) | ○ |
+| `Analytic/DigitFourier` | finite Fourier expansion of digit sets, `ℓ¹` bound (§9) | ✓ |
 | `Range/Medium` | medium primes and strips `≤ 0.35 X` (§9–10) | ○ |
 | `Range/Large` | large primes `≤ 0.60 X` given `MertensAP 210` (§11) | ✓ |
 | `Main` | `#failSet ≤ 0.98 X`, conditional endpoints, `k = 2` from `k = 3` (§12) | ✓ |
 | `Analytic/MertensSource` | vendored Mertens theorems (see `third_party/mertens`) | ✓ |
 | `Analytic/Mertens` | `mertens_second`, block sums (6.3), definition of `MertensAP` | ✓ |
-| `Analytic/CharacterPartialSums`, `LFunctionLink`, `CharacterMertens`, `MertensAPProof` | proof of `MertensAP q` via character sums and `L(1,χ) ≠ 0` (§6) | ○ |
+| `Analytic/CharacterPartialSums`, `LFunctionLink`, `CharacterMertens` | character partial sums, `lim ∑χ(n)/n = L(1,χ)`, twisted Mertens (§6) | ✓ |
+| `Analytic/MertensAPProof` | orthogonality and the `Weight` framework: `MertensAP q` (§6) | ○ |
 | `Analytic/MertensAP`, `Final` | `mertensAP_210`, unconditional endpoints | ✓ (modulo the chain) |
 
 ## Design decisions (deviations from the manuscript)
